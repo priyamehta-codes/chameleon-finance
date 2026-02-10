@@ -2,11 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the budget module
-const budgetCode = fs.readFileSync(path.join(__dirname, '../../js/budget.js'), 'utf8');
-eval(budgetCode);
-
-// Mock dependencies
+// Mock dependencies BEFORE loading module
 global.currencies = {
   USD: { symbol: '$', name: 'US Dollar', rate: 1 },
   EUR: { symbol: '€', name: 'Euro', rate: 0.92 },
@@ -14,6 +10,17 @@ global.currencies = {
 };
 
 global.selectedCurrency = 'USD';
+global.toMonthly = jest.fn((sub) => sub.price || 0);
+
+// Load budget module - convert const to var assignment for global access
+let budgetCode = fs.readFileSync(path.join(__dirname, '../../js/budget.js'), 'utf8');
+budgetCode = budgetCode.replace('const BudgetManager = {', 'BudgetManager = {');
+eval(budgetCode);
+
+// BudgetManager should now be accessible
+if (typeof BudgetManager === 'undefined') {
+  throw new Error('BudgetManager failed to load');
+}
 
 describe('BudgetManager - Feature 1: Budget Alerts & Thresholds', () => {
   beforeEach(() => {

@@ -28,9 +28,9 @@ describe("Rates API Error Handling", () => {
   test("RATES-3: Handles NaN from parseInt on invalid timestamp", () => {
     const testValue = "invalid";
     const parsed = parseInt(testValue) || 0;
-    expect(isNaN(parsed)).toBe(true);
-    // Should use default 0 instead
-    expect(parsed === 0 || isNaN(parsed)).toBe(true);
+    // parseInt('invalid') returns NaN, and NaN || 0 returns 0 (because NaN is falsy)
+    expect(parsed).toBe(0);
+    expect(isNaN(parsed)).toBe(false);
   });
 
   test("RATES-4: localStorage cache expiry calculation works with 0 timestamp", () => {

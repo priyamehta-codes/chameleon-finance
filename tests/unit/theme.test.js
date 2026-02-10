@@ -2,9 +2,15 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the theme module
-const themeCode = fs.readFileSync(path.join(__dirname, '../../js/theme.js'), 'utf8');
+// Load theme module - convert const to var assignment for global access
+let themeCode = fs.readFileSync(path.join(__dirname, '../../js/theme.js'), 'utf8');
+themeCode = themeCode.replace('const ThemeManager = {', 'ThemeManager = {');
 eval(themeCode);
+
+// ThemeManager should now be accessible
+if (typeof ThemeManager === 'undefined') {
+  throw new Error('ThemeManager failed to load');
+}
 
 describe('ThemeManager - Feature 5: Dark Mode Theme System', () => {
   beforeEach(() => {
@@ -45,7 +51,11 @@ describe('ThemeManager - Feature 5: Dark Mode Theme System', () => {
     });
 
     test('CD-6: Should handle corrupted localStorage', () => {
-      localStorage.data['subgrid_theme'] = undefined;
+      // Ensure localStorage.data exists and set a corrupted value
+      if (!global.localStorage.data) {
+        global.localStorage.data = {};
+      }
+      global.localStorage.data['subgrid_theme'] = undefined;
       const theme = ThemeManager.getSavedTheme();
       expect(theme).toBeNull();
     });
@@ -130,7 +140,8 @@ describe('ThemeManager - Feature 5: Dark Mode Theme System', () => {
       document.body.appendChild(label);
 
       ThemeManager.updateThemeButton('light');
-      expect(label.innerText).toBe('Light');
+      const updatedLabel = document.getElementById('theme-label');
+      expect(updatedLabel.innerText).toBe('Light');
     });
 
     test('CD-19: Should update theme label to Dark', () => {
@@ -139,7 +150,8 @@ describe('ThemeManager - Feature 5: Dark Mode Theme System', () => {
       document.body.appendChild(label);
 
       ThemeManager.updateThemeButton('dark');
-      expect(label.innerText).toBe('Dark');
+      const updatedLabel = document.getElementById('theme-label');
+      expect(updatedLabel.innerText).toBe('Dark');
     });
 
     test('CD-20: Should handle missing button gracefully', () => {

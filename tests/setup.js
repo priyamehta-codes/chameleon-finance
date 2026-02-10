@@ -1,3 +1,9 @@
+// Load utils.js for escapeHtml and LOGO_API_TOKEN
+const fs = require('fs');
+const path = require('path');
+const utilsCode = fs.readFileSync(path.join(__dirname, '../js/utils.js'), 'utf8');
+eval(utilsCode);
+
 // Test setup and utilities
 global.localStorage = {
   data: {},

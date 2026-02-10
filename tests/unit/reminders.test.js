@@ -2,9 +2,16 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the reminders module
-const remindersCode = fs.readFileSync(path.join(__dirname, '../../js/reminders.js'), 'utf8');
+// Load reminders module - convert const to var assignment for global access
+let remindersCode = fs.readFileSync(path.join(__dirname, '../../js/reminders.js'), 'utf8');
+// Replace const ReminderManager with global assignment
+remindersCode = remindersCode.replace('const ReminderManager = {', 'ReminderManager = {');
 eval(remindersCode);
+
+// ReminderManager should now be accessible
+if (typeof ReminderManager === 'undefined') {
+  throw new Error('ReminderManager failed to load');
+}
 
 describe('ReminderManager - Feature 3: Renewal Reminders', () => {
   describe('calculateNextRenewal', () => {

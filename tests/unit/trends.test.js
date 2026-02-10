@@ -2,13 +2,20 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the trends module
-const trendsCode = fs.readFileSync(path.join(__dirname, '../../js/trends.js'), 'utf8');
-eval(trendsCode);
-
-// Mock global variables
+// Mock global variables BEFORE loading module
 global.subs = [];
 global.selectedCurrency = 'USD';
+global.toMonthly = jest.fn((sub) => sub.price || 0);
+
+// Load trends module - convert const to var assignment for global access
+let trendsCode = fs.readFileSync(path.join(__dirname, '../../js/trends.js'), 'utf8');
+trendsCode = trendsCode.replace('const TrendsAnalyzer = {', 'TrendsAnalyzer = {');
+eval(trendsCode);
+
+// TrendsAnalyzer should now be accessible
+if (typeof TrendsAnalyzer === 'undefined') {
+  throw new Error('TrendsAnalyzer failed to load');
+}
 
 describe('TrendsAnalyzer - Feature 4: Spending Trends Analysis', () => {
   beforeEach(() => {

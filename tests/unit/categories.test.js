@@ -2,9 +2,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the categories module
-const categoriesCode = fs.readFileSync(path.join(__dirname, '../../js/categories.js'), 'utf8');
+// Mock dependencies that categories.js needs
+global.subs = [];
+global.save = jest.fn();
+global.toMonthly = jest.fn((sub) => sub.price || 0);
+
+// Load categories module - convert const to var assignment for global access
+let categoriesCode = fs.readFileSync(path.join(__dirname, '../../js/categories.js'), 'utf8');
+categoriesCode = categoriesCode.replace('const CATEGORIES = {', 'CATEGORIES = {');
+categoriesCode = categoriesCode.replace('const CATEGORY_KEYWORDS = {', 'CATEGORY_KEYWORDS = {');
+categoriesCode = categoriesCode.replace('const CategoryManager = {', 'CategoryManager = {');
 eval(categoriesCode);
+
+// CATEGORIES and CategoryManager should now be accessible
+if (typeof CATEGORIES === 'undefined' || typeof CategoryManager === 'undefined') {
+  throw new Error('Failed to load categories module');
+}
 
 describe('CategoryManager - Feature 2: Subscription Categories', () => {
   describe('CATEGORIES constant', () => {
@@ -77,15 +90,15 @@ describe('CategoryManager - Feature 2: Subscription Categories', () => {
 
   describe('assignCategory', () => {
     test('CC-15: Should assign category to subscription', () => {
-      const subs = [{ id: '1', name: 'Netflix', category: 'other' }];
-      CategoryManager.assignCategory(subs, '1', 'entertainment');
-      expect(subs[0].category).toBe('entertainment');
+      global.subs = [{ id: '1', name: 'Netflix', category: 'other' }];
+      CategoryManager.assignCategory('1', 'entertainment');
+      expect(global.subs[0].category).toBe('entertainment');
     });
 
     test('CC-16: Should handle non-existent subscription', () => {
-      const subs = [{ id: '1', name: 'Netflix' }];
-      CategoryManager.assignCategory(subs, '999', 'entertainment');
-      expect(subs[0].category).toBeUndefined();
+      global.subs = [{ id: '1', name: 'Netflix' }];
+      const result = CategoryManager.assignCategory('999', 'entertainment');
+      expect(result.success).toBe(false);
     });
   });
 
