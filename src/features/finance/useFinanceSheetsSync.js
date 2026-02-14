@@ -36,7 +36,9 @@ export function useFinanceSheetsSync() {
     setLastError(null);
 
     try {
-      const records = await SheetsAPI.readFinancialRecords(creds.spreadsheetId, FINANCE_SHEET_TAB);
+      const gidMatch = (creds.sheetsUrl || '').match(/(?:[?#&]gid=)(\d+)/i);
+      const targetTab = gidMatch ? `gid:${gidMatch[1]}` : FINANCE_SHEET_TAB;
+      const records = await SheetsAPI.readFinancialRecords(creds.spreadsheetId, targetTab);
       setRecords(records);
 
       const now = new Date().toISOString();

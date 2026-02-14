@@ -65,7 +65,11 @@ export function parseSheetCSV(text) {
  * Fetch a sheet tab as CSV from a public Google Sheet
  */
 export async function fetchSheet(spreadsheetId, sheetName) {
-  const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  const base = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`;
+  const isGidTarget = typeof sheetName === 'string' && sheetName.startsWith('gid:');
+  const url = isGidTarget
+    ? `${base}&gid=${encodeURIComponent(sheetName.slice(4))}`
+    : `${base}&sheet=${encodeURIComponent(sheetName)}`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const text = await response.text();

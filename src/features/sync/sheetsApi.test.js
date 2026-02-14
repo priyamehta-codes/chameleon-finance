@@ -144,6 +144,44 @@ describe('Sheets API', () => {
     });
   });
 
+  // --- fetchSheet URL behavior ---
+
+  describe('fetchSheet', () => {
+    beforeEach(() => {
+      global.fetch = vi.fn();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    // SA-16
+    it('uses sheet query param for named tab targets', async () => {
+      global.fetch.mockResolvedValue({
+        ok: true,
+        text: async () => 'a,b\n1,2',
+      });
+
+      await fetchSheet('fakeId', 'Sheet1');
+      const calledUrl = global.fetch.mock.calls[0][0];
+      expect(calledUrl).toContain('sheet=Sheet1');
+      expect(calledUrl).not.toContain('&gid=');
+    });
+
+    // SA-17
+    it('uses gid query param for gid targets', async () => {
+      global.fetch.mockResolvedValue({
+        ok: true,
+        text: async () => 'a,b\n1,2',
+      });
+
+      await fetchSheet('fakeId', 'gid:423540830');
+      const calledUrl = global.fetch.mock.calls[0][0];
+      expect(calledUrl).toContain('gid=423540830');
+      expect(calledUrl).not.toContain('&sheet=');
+    });
+  });
+
   // --- readSubscriptions ---
 
   describe('readSubscriptions', () => {
@@ -155,7 +193,7 @@ describe('Sheets API', () => {
       vi.restoreAllMocks();
     });
 
-    // SA-16
+    // SA-18
     it('parses CSV into subscription objects', async () => {
       const csvText =
         '"id","name","price","currency","cycle","category","startDate","notificationsEnabled","reminderDays","url","color","lastModified"\n' +
@@ -191,7 +229,7 @@ describe('Sheets API', () => {
       vi.restoreAllMocks();
     });
 
-    // SA-17
+    // SA-19
     it('parses budget row from CSV', async () => {
       const csvText = '"amount","currency","lastModified"\n"100.50","EUR","2024-06-01T00:00:00.000Z"';
 
@@ -219,7 +257,7 @@ describe('Sheets API', () => {
       vi.restoreAllMocks();
     });
 
-    // SA-18
+    // SA-20
     it('maps income and expenses from header names even when title row exists', async () => {
       const csvText = [
         '"My Finance Tracker"',
@@ -241,7 +279,7 @@ describe('Sheets API', () => {
       expect(records[1].expenses).toBe(1250);
     });
 
-    // SA-19
+    // SA-21
     it('supports common misspelling variants for Income/Expenses column headers', async () => {
       const csvText = [
         '"Date","Description","Income Collumn","Expenses Collumn"',
