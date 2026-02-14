@@ -9,17 +9,17 @@ function TrendCard({ title, data, currency, currencies }) {
   const isDown = data.direction === 'down';
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-4">
-      <div className="mb-1 text-xs font-medium text-slate-400">{title}</div>
+    <div className="rounded-2xl border border-slate-100 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+      <div className="mb-1 text-xs font-medium text-slate-400 dark:text-slate-500">{title}</div>
       <div className="flex items-baseline gap-2">
-        <span className={`text-lg font-bold ${isUp ? 'text-red-500' : isDown ? 'text-green-500' : 'text-slate-600'}`}>
+        <span className={`text-lg font-bold ${isUp ? 'text-red-500' : isDown ? 'text-green-500' : 'text-slate-600 dark:text-slate-400'}`}>
           {data.change > 0 ? '+' : ''}{formatCurrency(Math.abs(data.change), currency, currencies)}
         </span>
-        <span className={`text-sm ${isUp ? 'text-red-400' : isDown ? 'text-green-400' : 'text-slate-400'}`}>
+        <span className={`text-sm ${isUp ? 'text-red-400' : isDown ? 'text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
           {data.percentage > 0 ? '+' : ''}{data.percentage}%
         </span>
       </div>
-      <div className="mt-1 flex items-center gap-1 text-xs text-slate-400">
+      <div className="mt-1 flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
         {isUp && (
           <svg className="h-3 w-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -31,7 +31,7 @@ function TrendCard({ title, data, currency, currencies }) {
           </svg>
         )}
         {!isUp && !isDown && (
-          <svg className="h-3 w-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-3 w-3 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" />
           </svg>
         )}
@@ -48,14 +48,14 @@ export default function TrendsSection() {
 
   if (!hasEnoughData) {
     return (
-      <div className="rounded-2xl border border-slate-100 bg-white p-4">
-        <h3 className="mb-2 text-sm font-semibold text-slate-700">Spending Trends</h3>
-        <p className="text-xs text-slate-400">
+      <div className="rounded-2xl border border-slate-100 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+        <h3 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">Spending Trends</h3>
+        <p className="text-xs text-slate-400 dark:text-slate-500">
           Not enough data yet. Trends will appear after at least 2 months of tracked data.
         </p>
         <button
           onClick={recordSnapshot}
-          className="mt-2 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+          className="mt-2 text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
           Record current snapshot
         </button>
@@ -66,10 +66,10 @@ export default function TrendsSection() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-700">Spending Trends</h3>
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Spending Trends</h3>
         <button
           onClick={downloadTrendData}
-          className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+          className="text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
           Export CSV
         </button>
@@ -91,12 +91,12 @@ export default function TrendsSection() {
       </div>
 
       {trendDirection && (
-        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
-          <span className="text-xs text-slate-500">Overall trend:</span>
+        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800">
+          <span className="text-xs text-slate-500 dark:text-slate-400">Overall trend:</span>
           <span className={`text-xs font-semibold ${
             trendDirection.direction === 'increasing' ? 'text-red-500' :
             trendDirection.direction === 'decreasing' ? 'text-green-500' :
-            'text-slate-600'
+            'text-slate-600 dark:text-slate-400'
           }`}>
             {trendDirection.direction === 'increasing' ? 'Spending is rising' :
              trendDirection.direction === 'decreasing' ? 'Spending is falling' :

@@ -95,15 +95,15 @@ export default function App() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl">Chameleon</h1>
+          <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl dark:text-slate-100">Chameleon</h1>
           <div className="mt-1 flex items-center gap-3">
-            <p className="text-sm text-slate-400">Subscription Cost Visualizer</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500">Subscription Cost Visualizer</p>
             <SyncIndicator />
           </div>
         </div>
         <button
           onClick={() => setSettingsOpen(true)}
-          className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+          className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           aria-label="Settings"
         >
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,11 +120,11 @@ export default function App() {
 
           {/* Presets */}
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-slate-500">Quick Add</h2>
+            <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400">Quick Add</h2>
             <PresetsGrid onSelect={handlePresetSelect} />
             <button
               onClick={handleOpenModal}
-              className="w-full rounded-xl py-2 text-center text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
+              className="w-full rounded-xl py-2 text-center text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30"
             >
               Browse All Presets
             </button>
@@ -152,7 +152,7 @@ export default function App() {
           <div className="flex items-center justify-between">
             <button
               onClick={() => setStep(1)}
-              className="flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+              className="flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -164,15 +164,15 @@ export default function App() {
 
           {/* Totals */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-slate-100 bg-white p-4">
-              <div className="text-xs font-medium text-slate-400">Monthly</div>
-              <div className="text-xl font-bold text-slate-800">
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+              <div className="text-xs font-medium text-slate-400 dark:text-slate-500">Monthly</div>
+              <div className="text-xl font-bold text-slate-800 dark:text-slate-200">
                 {formatCurrency(monthlyTotal, selectedCurrency, currencies)}
               </div>
             </div>
-            <div className="rounded-2xl border border-slate-100 bg-white p-4">
-              <div className="text-xs font-medium text-slate-400">Yearly</div>
-              <div className="text-xl font-bold text-slate-800">
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+              <div className="text-xs font-medium text-slate-400 dark:text-slate-500">Yearly</div>
+              <div className="text-xl font-bold text-slate-800 dark:text-slate-200">
                 {formatCurrency(yearlyTotal, selectedCurrency, currencies)}
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function App() {
           {/* Export CSV */}
           <button
             onClick={handleExportCSV}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

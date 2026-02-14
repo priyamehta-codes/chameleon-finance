@@ -33,7 +33,7 @@ export default function SubscriptionCard({ sub, onEdit, onRemove }) {
   }
 
   return (
-    <div className="relative flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+    <div className="relative flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       {renewalBadge}
       <div
         className="flex flex-1 cursor-pointer items-center gap-3 min-w-0"
@@ -52,13 +52,13 @@ export default function SubscriptionCard({ sub, onEdit, onRemove }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         ) : (
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100">
-            <span className="text-sm font-bold text-slate-400">{sub.name.charAt(0)}</span>
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700">
+            <span className="text-sm font-bold text-slate-400 dark:text-slate-500">{sub.name.charAt(0)}</span>
           </div>
         )}
         <div className="min-w-0">
-          <div className="truncate font-bold text-slate-900">{sub.name}</div>
-          <div className="text-xs text-slate-500">
+          <div className="truncate font-bold text-slate-900 dark:text-slate-100">{sub.name}</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400">
             {formatOriginalPrice(sub, selectedCurrency, currencies)} / {sub.cycle}
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function SubscriptionCard({ sub, onEdit, onRemove }) {
       <div className="flex items-center gap-1">
         <button
           onClick={() => onEdit(sub.id)}
-          className="p-2 text-slate-300 hover:text-indigo-500"
+          className="p-2 text-slate-300 hover:text-indigo-500 dark:text-slate-500 dark:hover:text-indigo-400"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -74,7 +74,7 @@ export default function SubscriptionCard({ sub, onEdit, onRemove }) {
         </button>
         <button
           onClick={() => onRemove(sub.id)}
-          className="p-2 text-slate-300 hover:text-red-500"
+          className="p-2 text-slate-300 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

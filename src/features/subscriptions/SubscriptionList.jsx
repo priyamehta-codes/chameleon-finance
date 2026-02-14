@@ -16,10 +16,10 @@ export default function SubscriptionList({ onEdit, onOpenModal }) {
 
   if (subs.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 py-16 text-center dark:border-slate-600">
         <div className="text-4xl mb-3">📋</div>
-        <p className="text-sm font-semibold text-slate-500">No subscriptions yet</p>
-        <p className="mt-1 text-xs text-slate-400">Add your first subscription to get started</p>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">No subscriptions yet</p>
+        <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Add your first subscription to get started</p>
       </div>
     );
   }
@@ -36,7 +36,7 @@ export default function SubscriptionList({ onEdit, onOpenModal }) {
       ))}
       <button
         onClick={onOpenModal}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 py-4 font-bold text-slate-400 transition-all hover:border-indigo-300 hover:bg-white hover:text-indigo-600"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 py-4 font-bold text-slate-400 transition-all hover:border-indigo-300 hover:bg-white hover:text-indigo-600 dark:border-slate-600 dark:text-slate-500 dark:hover:border-indigo-500 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

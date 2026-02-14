@@ -33,7 +33,7 @@ export default function BudgetSettings() {
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-semibold text-slate-700">Monthly Budget</label>
+      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Monthly Budget</label>
 
       <div className="flex items-center gap-2">
         <input
@@ -46,7 +46,7 @@ export default function BudgetSettings() {
             setSaved(false);
           }}
           placeholder="e.g. 100"
-          className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
         />
         <CurrencySelect
           value={currency}
@@ -72,7 +72,7 @@ export default function BudgetSettings() {
         {budget && (
           <button
             onClick={handleRemove}
-            className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500"
+            className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-red-400"
           >
             Remove
           </button>

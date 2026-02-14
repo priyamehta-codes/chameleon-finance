@@ -38,8 +38,8 @@ export default function SankeyView() {
 
   if (subs.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-2xl border-2 border-dashed border-slate-200">
-        <p className="text-sm text-slate-400">Add subscriptions to see the Sankey diagram</p>
+      <div className="flex h-64 items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-600">
+        <p className="text-sm text-slate-400 dark:text-slate-500">Add subscriptions to see the Sankey diagram</p>
       </div>
     );
   }
@@ -47,7 +47,7 @@ export default function SankeyView() {
   return (
     <div ref={containerRef} className="w-full">
       <div
-        className="relative overflow-hidden rounded-2xl bg-white border border-slate-100"
+        className="relative overflow-hidden rounded-2xl bg-white border border-slate-100 dark:bg-slate-800 dark:border-slate-700"
         style={{ width: dimensions.width, height: dimensions.height }}
       >
         {/* SVG Links layer */}
@@ -81,7 +81,7 @@ export default function SankeyView() {
           return (
             <div
               key={node.id}
-              className="absolute flex flex-col items-center justify-center overflow-hidden rounded-lg border border-white/60 transition-all duration-200 cursor-default"
+              className="absolute flex flex-col items-center justify-center overflow-hidden rounded-lg border border-white/60 transition-all duration-200 cursor-default dark:border-slate-600/60"
               style={{
                 left: node.x,
                 top: node.y,
@@ -99,12 +99,12 @@ export default function SankeyView() {
               title={`${node.label}: ${formatCurrency(node.value, selectedCurrency, currencies)}/mo`}
             >
               {showLabel && (
-                <span className="truncate px-1 text-center text-xs font-semibold text-slate-700 leading-tight">
+                <span className="truncate px-1 text-center text-xs font-semibold text-slate-700 leading-tight dark:text-slate-200">
                   {node.label}
                 </span>
               )}
               {showValue && (
-                <span className="text-xs text-slate-500 leading-tight">
+                <span className="text-xs text-slate-500 leading-tight dark:text-slate-400">
                   {formatCurrency(node.value, selectedCurrency, currencies)}
                 </span>
               )}
@@ -115,7 +115,7 @@ export default function SankeyView() {
 
       {/* Legend */}
       {income === 0 && (
-        <p className="mt-2 text-center text-xs text-slate-400">
+        <p className="mt-2 text-center text-xs text-slate-400 dark:text-slate-500">
           Set your monthly income in Settings to see the full income flow
         </p>
       )}

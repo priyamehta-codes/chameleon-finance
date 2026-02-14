@@ -21,6 +21,10 @@ const defaultForm = {
   reminderDays: 7,
 };
 
+const inputClass = 'w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200';
+const selectClass = 'w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200';
+const labelClass = 'mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300';
+
 export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }) {
   const subs = useSubscriptionStore((s) => s.subs);
   const addSub = useSubscriptionStore((s) => s.addSub);
@@ -105,40 +109,40 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
     <Modal isOpen={isOpen} onClose={onClose} title={editId ? 'Edit Subscription' : 'Add Subscription'}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-semibold text-slate-700">Name</label>
+          <label className={labelClass}>Name</label>
           <input
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className={inputClass}
             placeholder="e.g. Netflix"
             required
           />
           {suggestion && (
-            <p className="mt-1 text-xs text-slate-400">Suggested: {suggestion}</p>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Suggested: {suggestion}</p>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">Price</label>
+            <label className={labelClass}>Price</label>
             <input
               type="number"
               step="0.01"
               min="0.01"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className={inputClass}
               placeholder="9.99"
               required
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">Currency</label>
+            <label className={labelClass}>Currency</label>
             <select
               value={form.currency}
               onChange={(e) => setForm({ ...form, currency: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
+              className={selectClass}
             >
               {Object.entries(useCurrencyStore.getState().currencies).map(([code, curr]) => (
                 <option key={code} value={code}>{curr.symbol} {code}</option>
@@ -149,11 +153,11 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">Billing Cycle</label>
+            <label className={labelClass}>Billing Cycle</label>
             <select
               value={form.cycle}
               onChange={(e) => setForm({ ...form, cycle: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
+              className={selectClass}
             >
               <option value="Weekly">Weekly</option>
               <option value="Monthly">Monthly</option>
@@ -161,11 +165,11 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">Category</label>
+            <label className={labelClass}>Category</label>
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
+              className={selectClass}
             >
               {Object.values(CATEGORIES).map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -175,13 +179,13 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-semibold text-slate-700">Website URL</label>
+          <label className={labelClass}>Website URL</label>
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700">
               {faviconUrl ? (
                 <img src={faviconUrl} className="h-full w-full rounded-xl object-cover" crossOrigin="anonymous" alt="" />
               ) : (
-                <svg className="h-5 w-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-5 w-5 text-slate-300 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                 </svg>
               )}
@@ -190,24 +194,24 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
               type="text"
               value={form.url}
               onChange={(e) => setForm({ ...form, url: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className={inputClass}
               placeholder="netflix.com"
             />
           </div>
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-semibold text-slate-700">Start Date</label>
+          <label className={labelClass}>Start Date</label>
           <input
             type="date"
             value={form.startDate}
             onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-semibold text-slate-700">Color</label>
+          <label className={labelClass}>Color</label>
           <ColorPicker value={form.color} onChange={(id) => setForm({ ...form, color: id })} />
         </div>
 
@@ -217,21 +221,21 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
             id="notifications"
             checked={form.notificationsEnabled}
             onChange={(e) => setForm({ ...form, notificationsEnabled: e.target.checked })}
-            className="h-4 w-4 rounded border-slate-300 text-indigo-600"
+            className="h-4 w-4 rounded border-slate-300 text-indigo-600 dark:border-slate-600"
           />
-          <label htmlFor="notifications" className="text-sm text-slate-600">Enable renewal reminders</label>
+          <label htmlFor="notifications" className="text-sm text-slate-600 dark:text-slate-400">Enable renewal reminders</label>
         </div>
 
         {form.notificationsEnabled && (
           <div>
-            <label className="mb-1 block text-sm font-semibold text-slate-700">Remind me days before</label>
+            <label className={labelClass}>Remind me days before</label>
             <input
               type="number"
               min="1"
               max="30"
               value={form.reminderDays}
               onChange={(e) => setForm({ ...form, reminderDays: parseInt(e.target.value) || 7 })}
-              className="w-24 rounded-xl border border-slate-200 px-4 py-2.5 text-sm"
+              className="w-24 rounded-xl border border-slate-200 px-4 py-2.5 text-sm dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
             />
           </div>
         )}

@@ -57,20 +57,20 @@ export default function SettingsModal({ isOpen, onClose }) {
       <div className="space-y-6">
         {/* Theme */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-slate-700">Appearance</label>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Appearance</label>
           <ThemeToggle />
         </div>
 
         {/* Currency */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-slate-700">Display Currency</label>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Display Currency</label>
           <CurrencySelect value={selectedCurrency} onChange={setCurrency} className="w-full" />
         </div>
 
         {/* Monthly Income */}
-        <div className="border-t border-slate-100 pt-4">
-          <label className="mb-2 block text-sm font-semibold text-slate-700">Monthly Income</label>
-          <p className="mb-2 text-xs text-slate-400">Used in the Sankey diagram to show income vs expenses</p>
+        <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
+          <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Monthly Income</label>
+          <p className="mb-2 text-xs text-slate-400 dark:text-slate-500">Used in the Sankey diagram to show income vs expenses</p>
           <div className="flex items-center gap-2">
             <input
               type="number"
@@ -79,29 +79,29 @@ export default function SettingsModal({ isOpen, onClose }) {
               placeholder="e.g. 5000"
               value={income || ''}
               onChange={(e) => setIncome(parseFloat(e.target.value) || 0)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
             />
-            <span className="text-sm font-medium text-slate-500">{selectedCurrency}</span>
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{selectedCurrency}</span>
           </div>
         </div>
 
         {/* Budget */}
-        <div className="border-t border-slate-100 pt-4">
+        <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
           <BudgetSettings />
         </div>
 
         {/* Google Sheets */}
-        <div className="border-t border-slate-100 pt-4">
+        <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
           <GoogleSheetsSettings />
         </div>
 
         {/* Import / Export */}
-        <div className="border-t border-slate-100 pt-4">
-          <label className="mb-3 block text-sm font-semibold text-slate-700">Data</label>
+        <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
+          <label className="mb-3 block text-sm font-semibold text-slate-700 dark:text-slate-300">Data</label>
           <div className="flex items-center gap-2">
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -110,7 +110,7 @@ export default function SettingsModal({ isOpen, onClose }) {
             </button>
             <button
               onClick={handleImport}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />

@@ -46,16 +46,16 @@ export default function GoogleSheetsSettings() {
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-semibold text-slate-700">Google Sheets Sync</label>
+      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Google Sheets Sync</label>
 
       {connected ? (
         <div className="space-y-3">
-          <div className="flex items-center gap-2 rounded-xl bg-green-50 px-3 py-2">
+          <div className="flex items-center gap-2 rounded-xl bg-green-50 px-3 py-2 dark:bg-green-900/30">
             <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span className="text-xs font-medium text-green-700">Connected</span>
+            <span className="text-xs font-medium text-green-700 dark:text-green-400">Connected</span>
           </div>
 
-          <div className="text-xs text-slate-400">
+          <div className="text-xs text-slate-400 dark:text-slate-500">
             Last sync: {formatSyncTime(lastSyncTime)}
           </div>
 
@@ -73,7 +73,7 @@ export default function GoogleSheetsSettings() {
             </button>
             <button
               onClick={disconnect}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500"
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-red-400"
             >
               Disconnect
             </button>
@@ -81,7 +81,7 @@ export default function GoogleSheetsSettings() {
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Connect a published Google Sheets CSV URL to sync your subscriptions.
           </p>
 
@@ -93,7 +93,7 @@ export default function GoogleSheetsSettings() {
               setError('');
             }}
             placeholder="https://docs.google.com/spreadsheets/d/..."
-            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
           />
 
           {error && (

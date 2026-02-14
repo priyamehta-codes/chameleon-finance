@@ -15,7 +15,7 @@ export default function PresetsGrid({ onSelect }) {
           <button
             key={preset.name}
             onClick={() => onSelect(preset)}
-            className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-3 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-sm"
+            className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-3 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-indigo-700 dark:hover:bg-indigo-900/30"
           >
             {logoUrl ? (
               <img
@@ -30,11 +30,11 @@ export default function PresetsGrid({ onSelect }) {
               />
             ) : null}
             <div
-              className={`items-center justify-center h-8 w-8 rounded-lg bg-slate-100 ${logoUrl ? 'hidden' : 'flex'}`}
+              className={`items-center justify-center h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-700 ${logoUrl ? 'hidden' : 'flex'}`}
             >
-              <span className="text-sm font-bold text-slate-400">{preset.name.charAt(0)}</span>
+              <span className="text-sm font-bold text-slate-400 dark:text-slate-500">{preset.name.charAt(0)}</span>
             </div>
-            <span className="text-xs font-medium text-slate-600 truncate w-full text-center">
+            <span className="text-xs font-medium text-slate-600 truncate w-full text-center dark:text-slate-400">
               {preset.name}
             </span>
           </button>
