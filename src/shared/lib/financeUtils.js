@@ -104,3 +104,40 @@ export function parseFinanceCSVRow(row) {
 export function isValidRecord(record) {
   return !!(record && record.date && record.description);
 }
+
+/**
+ * Group records by type and compute totals per type.
+ */
+export function computeBreakdownByType(records) {
+  const map = {};
+  for (const r of records) {
+    const type = r.type || 'Other';
+    if (!map[type]) {
+      map[type] = { type, income: 0, expenses: 0, minimumExpenses: 0, count: 0 };
+    }
+    map[type].income += r.income || 0;
+    map[type].expenses += r.expenses || 0;
+    map[type].minimumExpenses += r.minimumExpenses || 0;
+    map[type].count += 1;
+  }
+  return Object.values(map).sort((a, b) => (b.income + b.expenses) - (a.income + a.expenses));
+}
+
+/**
+ * Group records by month and compute income/expenses per month.
+ */
+export function computeMonthlyTrend(records) {
+  const map = {};
+  for (const r of records) {
+    if (!r.date) continue;
+    const d = new Date(r.date);
+    if (isNaN(d.getTime())) continue;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    if (!map[key]) {
+      map[key] = { month: key, income: 0, expenses: 0 };
+    }
+    map[key].income += r.income || 0;
+    map[key].expenses += r.expenses || 0;
+  }
+  return Object.values(map).sort((a, b) => a.month.localeCompare(b.month));
+}

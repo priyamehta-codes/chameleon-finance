@@ -1,12 +1,18 @@
 import { useState } from 'react';
+import { useFinanceStore } from '@store/financeStore';
+import { exportFinanceCSV } from '@shared/lib/financeUtils';
 import FinanceSummary from '@features/finance/FinanceSummary';
 import FinanceToolbar from '@features/finance/FinanceToolbar';
 import FinanceList from '@features/finance/FinanceList';
+import FinanceDashboard from '@features/finance/FinanceDashboard';
 import FinanceRecordModal from '@features/finance/FinanceRecordModal';
 
 export default function FinanceSection() {
+  const [step, setStep] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editId, setEditId] = useState(null);
+
+  const records = useFinanceStore((s) => s.records);
 
   const handleEdit = (id) => {
     setEditId(id);
@@ -23,11 +29,69 @@ export default function FinanceSection() {
     setEditId(null);
   };
 
+  const handleExportCSV = () => {
+    const csv = exportFinanceCSV(records);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'chameleon-finance-' + new Date().toISOString().split('T')[0] + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
-      <FinanceSummary />
-      <FinanceToolbar />
-      <FinanceList onEdit={handleEdit} onOpenModal={handleOpenModal} />
+      {/* Step 1: Record Management */}
+      {step === 1 && (
+        <>
+          <FinanceSummary />
+          <FinanceToolbar />
+          <FinanceList onEdit={handleEdit} onOpenModal={handleOpenModal} />
+
+          {records.length > 0 && (
+            <button
+              onClick={() => setStep(2)}
+              className="w-full rounded-2xl bg-indigo-600 py-3.5 font-bold text-white shadow-lg transition-all hover:bg-indigo-700 hover:shadow-xl"
+            >
+              View Dashboard
+            </button>
+          )}
+        </>
+      )}
+
+      {/* Step 2: Dashboard */}
+      {step === 2 && (
+        <>
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setStep(1)}
+              className="flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+          </div>
+
+          <FinanceSummary />
+          <FinanceDashboard />
+
+          <button
+            onClick={handleExportCSV}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export CSV
+          </button>
+        </>
+      )}
+
       <FinanceRecordModal
         isOpen={modalOpen}
         onClose={handleCloseModal}
