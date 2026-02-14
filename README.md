@@ -26,8 +26,8 @@ A personal finance tracker built with React. Track subscriptions and financial r
 ## Quick Start
 
 ```bash
-git clone https://github.com/KunanonJ/abdull-finance.git
-cd abdull-finance
+git clone https://github.com/KunanonJ/chameleon-finance.git
+cd chameleon-finance
 npm install
 npm run dev
 ```

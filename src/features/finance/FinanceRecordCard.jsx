@@ -1,17 +1,38 @@
+import { useState } from 'react';
 import { getTypeColor, getTypeLabel } from '@shared/lib/financeConstants';
+import { LOGO_API_TOKEN } from '@shared/lib/constants';
 
 export default function FinanceRecordCard({ record, onEdit, onRemove }) {
   const typeColor = getTypeColor(record.type);
   const hasIncome = record.income > 0;
   const hasExpense = record.expenses > 0;
+  const [iconError, setIconError] = useState(false);
+
+  const logoUrl = record.iconDomain && record.iconDomain.length >= 4
+    ? `https://img.logo.dev/${record.iconDomain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
+    : null;
+
+  const initial = (record.description || '?')[0].toUpperCase();
 
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
-      {/* Type color strip */}
-      <div
-        className="h-10 w-1 shrink-0 rounded-full"
-        style={{ backgroundColor: typeColor }}
-      />
+      {/* Brand icon or fallback initial */}
+      {logoUrl && !iconError ? (
+        <img
+          src={logoUrl}
+          className="h-10 w-10 shrink-0 rounded-xl object-contain"
+          crossOrigin="anonymous"
+          alt={record.description}
+          onError={() => setIconError(true)}
+        />
+      ) : (
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+          style={{ backgroundColor: typeColor }}
+        >
+          {initial}
+        </div>
+      )}
 
       {/* Main content */}
       <div className="min-w-0 flex-1">

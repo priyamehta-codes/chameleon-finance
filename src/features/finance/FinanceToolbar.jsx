@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useFinanceStore } from '@store/financeStore';
 import { exportFinanceCSV } from '@shared/lib/financeUtils';
 import { FINANCE_TEMPLATE_COPY_URL } from '@shared/lib/financeConstants';
@@ -6,8 +7,10 @@ import * as SheetsAPI from '@features/sync/sheetsApi';
 
 export default function FinanceToolbar() {
   const records = useFinanceStore((s) => s.records);
+  const clearAll = useFinanceStore((s) => s.clearAll);
   const { syncStatus, pullFinance } = useFinanceSheetsSync();
   const connected = SheetsAPI.isConnected();
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const handleExport = () => {
     const csv = exportFinanceCSV(records);
@@ -24,6 +27,16 @@ export default function FinanceToolbar() {
 
   const handleCopyTemplate = () => {
     window.open(FINANCE_TEMPLATE_COPY_URL, '_blank');
+  };
+
+  const handleClearAll = () => {
+    if (!confirmClear) {
+      setConfirmClear(true);
+      setTimeout(() => setConfirmClear(false), 3000);
+      return;
+    }
+    clearAll();
+    setConfirmClear(false);
   };
 
   const btnClass = 'flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700';
@@ -54,6 +67,22 @@ export default function FinanceToolbar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           {syncStatus === 'syncing' ? 'Syncing...' : 'Sync'}
+        </button>
+      )}
+
+      {records.length > 0 && (
+        <button
+          onClick={handleClearAll}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-2xl border py-2.5 text-xs font-semibold transition-colors ${
+            confirmClear
+              ? 'border-red-300 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-500 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+              : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700'
+          }`}
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          {confirmClear ? 'Confirm?' : 'Clear All'}
         </button>
       )}
     </div>

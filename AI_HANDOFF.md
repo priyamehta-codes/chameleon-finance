@@ -7,7 +7,7 @@
 | Key | Value |
 |-----|-------|
 | **Name** | Chameleon |
-| **Repo** | `https://github.com/KunanonJ/abdull-finance` |
+| **Repo** | `https://github.com/KunanonJ/chameleon-finance` |
 | **Production** | `chameleon-finance.workers.dev` (Cloudflare Pages) |
 | **Local dev** | `http://localhost:5173` (Vite dev server) |
 | **Description** | Personal finance tracker -- subscriptions + financial records, with visualizations, Google Sheets sync, and mobile support |
@@ -465,8 +465,8 @@ async function addFinanceRecord(page, { description, type, income, expenses }) {
 
 ### Cloudflare Pages
 
-- **Project name**: `abdull-finance`
-- **Subdomain**: `chameleon-finance.workers.dev`
+- **Project name**: `chameleon-finance`
+- **Subdomain**: `chameleon-finance.pages.dev`
 - **Build output**: `dist/` (Vite)
 - **Wrangler config**: `wrangler.jsonc`
 
@@ -474,7 +474,7 @@ async function addFinanceRecord(page, { description, type, income, expenses }) {
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=abdull-finance
+npx wrangler pages deploy dist --project-name=chameleon-finance
 ```
 
 ### CI/CD (GitHub Actions)
@@ -550,4 +550,4 @@ File: `.github/workflows/ci.yml`
 5. **New finance types**: Add to `FINANCE_TYPES` in `financeConstants.js`, update filter pills in `FinanceList.jsx`
 6. **New stores**: Follow Zustand persist pattern with custom storage handler (see `financeStore.js`)
 7. **Selectors in E2E tests**: Scope within `page.locator('form')` when testing modals to avoid ambiguity
-8. **Deploy**: `npm run build && npx wrangler pages deploy dist --project-name=abdull-finance`
+8. **Deploy**: `npm run build && npx wrangler pages deploy dist --project-name=chameleon-finance`

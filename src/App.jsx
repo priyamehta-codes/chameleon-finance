@@ -36,7 +36,7 @@ export default function App() {
   const [editId, setEditId] = useState(null);
   const [preset, setPreset] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('subscriptions');
+  const [activeTab, setActiveTab] = useState('finance');
 
   useEffect(() => {
     initRates();
@@ -118,6 +118,16 @@ export default function App() {
       {/* Tab Navigation */}
       <div className="mb-6 flex rounded-xl bg-slate-100 p-1 dark:bg-slate-700">
         <button
+          onClick={() => setActiveTab('finance')}
+          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
+            activeTab === 'finance'
+              ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-800 dark:text-indigo-400'
+              : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+          }`}
+        >
+          Finance Tracker
+        </button>
+        <button
           onClick={() => setActiveTab('subscriptions')}
           className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
             activeTab === 'subscriptions'
@@ -127,17 +137,10 @@ export default function App() {
         >
           Subscriptions
         </button>
-        <button
-          onClick={() => setActiveTab('finance')}
-          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
-            activeTab === 'finance'
-              ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-800 dark:text-indigo-400'
-              : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-          }`}
-        >
-          Finance
-        </button>
       </div>
+
+      {/* Finance Tracker Section */}
+      {activeTab === 'finance' && <FinanceSection />}
 
       {/* Step 1: Subscription Management */}
       {activeTab === 'subscriptions' && step === 1 && (
@@ -228,9 +231,6 @@ export default function App() {
           </button>
         </div>
       )}
-
-      {/* Finance Section */}
-      {activeTab === 'finance' && <FinanceSection />}
 
       {/* Modals */}
       <AddSubscriptionModal
