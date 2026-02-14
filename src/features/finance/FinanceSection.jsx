@@ -6,11 +6,13 @@ import FinanceToolbar from '@features/finance/FinanceToolbar';
 import FinanceList from '@features/finance/FinanceList';
 import FinanceDashboard from '@features/finance/FinanceDashboard';
 import FinanceRecordModal from '@features/finance/FinanceRecordModal';
+import ViewToggle from '@features/visualizations/ViewToggle';
 
 export default function FinanceSection() {
   const [step, setStep] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [currentView, setCurrentView] = useState('treemap');
 
   const records = useFinanceStore((s) => s.records);
 
@@ -75,10 +77,11 @@ export default function FinanceSection() {
               </svg>
               Back
             </button>
+            <ViewToggle currentView={currentView} onViewChange={setCurrentView} />
           </div>
 
           <FinanceSummary />
-          <FinanceDashboard />
+          <FinanceDashboard currentView={currentView} />
 
           <button
             onClick={handleExportCSV}

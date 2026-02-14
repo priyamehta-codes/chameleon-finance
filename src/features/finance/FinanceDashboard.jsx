@@ -4,8 +4,12 @@ import { useCurrencyStore } from '@store/currencyStore';
 import { formatCurrency } from '@shared/lib/currencies';
 import { computeBreakdownByType, computeMonthlyTrend } from '@shared/lib/financeUtils';
 import { getTypeColor, getTypeLabel } from '@shared/lib/financeConstants';
+import FinanceTreemapView from '@features/finance/FinanceTreemapView';
+import FinanceBeeswarmView from '@features/finance/FinanceBeeswarmView';
+import FinanceCirclePackView from '@features/finance/FinanceCirclePackView';
+import FinanceSankeyView from '@features/finance/FinanceSankeyView';
 
-export default function FinanceDashboard() {
+export default function FinanceDashboard({ currentView }) {
   const records = useFinanceStore((s) => s.records);
   const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
   const currencies = useCurrencyStore((s) => s.currencies);
@@ -39,6 +43,12 @@ export default function FinanceDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Visualization */}
+      {currentView === 'treemap' && <FinanceTreemapView />}
+      {currentView === 'beeswarm' && <FinanceBeeswarmView />}
+      {currentView === 'circlepack' && <FinanceCirclePackView />}
+      {currentView === 'sankey' && <FinanceSankeyView />}
+
       {/* Breakdown by Type */}
       <div className="rounded-2xl border border-slate-100 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
         <h3 className="mb-4 text-sm font-semibold text-slate-500 dark:text-slate-400">Breakdown by Type</h3>
