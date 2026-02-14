@@ -1,0 +1,22 @@
+{
+  "appId": "com.subgrid.app",
+  "appName": "SubGrid",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0f172a"
+    },
+    "StatusBar": {
+      "style": "Dark"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#6366f1"
+    }
+  }
+}

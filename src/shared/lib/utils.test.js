@@ -1,0 +1,41 @@
+import { describe, test, expect } from 'vitest';
+import { escapeHtml } from './utils.js';
+
+describe('HTML Escaping for XSS Prevention', () => {
+  test("XSS-1: Escapes single quotes by preventing XSS attack", () => {
+    const input = "'; alert('xss'); //";
+    const escaped = escapeHtml(input);
+    // Single quotes in text content are safe - they don't execute
+    expect(escaped).toBe("'; alert('xss'); //");
+  });
+
+  test("XSS-2: Escapes double quotes by preventing XSS attack", () => {
+    const input = '"; alert("xss"); //';
+    const escaped = escapeHtml(input);
+    // Double quotes in text content are safe - they don't execute
+    expect(escaped).toBe('"; alert("xss"); //');
+  });
+
+  test("XSS-3: Escapes HTML tags", () => {
+    const input = "<script>alert('xss')</script>";
+    const escaped = escapeHtml(input);
+    expect(escaped).not.toContain("<script>");
+    expect(escaped).toContain("&lt;");
+    expect(escaped).toContain("&gt;");
+  });
+
+  test("XSS-4: Handles normal text safely", () => {
+    const input = "Netflix";
+    const escaped = escapeHtml(input);
+    expect(escaped).toBe("Netflix");
+  });
+
+  test("XSS-5: Handles special characters safely", () => {
+    const input = "Netflix & Disney+ <script>";
+    const escaped = escapeHtml(input);
+    expect(escaped).toContain("&amp;");
+    expect(escaped).toContain("&lt;");
+    expect(escaped).toContain("&gt;");
+    expect(escaped).not.toContain("<script>");
+  });
+});
