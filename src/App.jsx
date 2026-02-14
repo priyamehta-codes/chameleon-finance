@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSubscriptionStore } from '@store/subscriptionStore';
 import { useCurrencyStore } from '@store/currencyStore';
 import { useTheme } from '@shared/hooks/useTheme';
@@ -21,6 +21,10 @@ import UpcomingRenewals from '@features/reminders/UpcomingRenewals';
 import SyncIndicator from '@features/sync/SyncIndicator';
 import SettingsModal from '@features/settings/SettingsModal';
 import FinanceSection from '@features/finance/FinanceSection';
+import { useSheetsSync } from '@features/sync/useSheetsSync';
+import { useFinanceSheetsSync } from '@features/finance/useFinanceSheetsSync';
+
+const AUTO_SYNC_INTERVAL_MS = 5 * 60 * 1000;
 
 export default function App() {
   useTheme();
@@ -33,6 +37,9 @@ export default function App() {
   const initRates = useCurrencyStore((s) => s.initRates);
   const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
   const currencies = useCurrencyStore((s) => s.currencies);
+  const { isConnected: isSheetsConnected, pull: pullSheets } = useSheetsSync();
+  const { pullFinance } = useFinanceSheetsSync();
+  const isAutoSyncingRef = useRef(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -43,6 +50,50 @@ export default function App() {
   useEffect(() => {
     initRates();
   }, [initRates]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const runAutoSync = async () => {
+      if (cancelled || isAutoSyncingRef.current) return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+      if (!isSheetsConnected()) return;
+
+      isAutoSyncingRef.current = true;
+      try {
+        await Promise.all([
+          pullSheets(),
+          pullFinance(),
+        ]);
+      } catch (err) {
+        console.warn('Auto sync failed:', err);
+      } finally {
+        isAutoSyncingRef.current = false;
+      }
+    };
+
+    // Initial background pull when app loads (if connected)
+    runAutoSync();
+
+    const intervalId = window.setInterval(runAutoSync, AUTO_SYNC_INTERVAL_MS);
+    const onOnline = () => runAutoSync();
+    const onFocus = () => runAutoSync();
+    const onVisibilityChange = () => {
+      if (!document.hidden) runAutoSync();
+    };
+
+    window.addEventListener('online', onOnline);
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [isSheetsConnected, pullSheets, pullFinance]);
 
   const handleEdit = (id) => {
     setEditId(id);

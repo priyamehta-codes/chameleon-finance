@@ -58,6 +58,9 @@ export default function GoogleSheetsSettings() {
           <div className="text-xs text-slate-400 dark:text-slate-500">
             Last sync: {formatSyncTime(lastSyncTime)}
           </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500">
+            Auto-sync runs every 5 minutes and when you come back online.
+          </div>
 
           {lastError && (
             <p className="text-xs text-red-500">{lastError}</p>

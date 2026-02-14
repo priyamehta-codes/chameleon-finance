@@ -13,7 +13,6 @@ export function useSheetsSync() {
   const [lastError, setLastError] = useState(null);
   const [conflicts, setConflicts] = useState([]);
 
-  const subs = useSubscriptionStore((s) => s.subs);
   const setSubs = useSubscriptionStore((s) => s.setSubs);
 
   const isConnected = useCallback(() => SheetsAPI.isConnected(), []);
@@ -37,6 +36,8 @@ export function useSheetsSync() {
       setSyncStatus('syncing');
       setLastError(null);
 
+      const localSubs = useSubscriptionStore.getState().subs;
+
       const localBudget = (() => {
         try {
           const data = localStorage.getItem('subgrid_budget');
@@ -53,7 +54,7 @@ export function useSheetsSync() {
 
       const result = await SyncManager.pullFromSheets(
         creds.spreadsheetId,
-        subs,
+        localSubs,
         localBudget,
         localTrends
       );
@@ -84,21 +85,24 @@ export function useSheetsSync() {
       setSyncStatus('error');
       return false;
     }
-  }, [subs, setSubs]);
+  }, [setSubs]);
 
   const resolveConflicts = useCallback((choice) => {
     if (choice === 'cloud') {
+      const localSubs = useSubscriptionStore.getState().subs;
+      const updated = [...localSubs];
+
       for (const conflict of conflicts) {
-        const index = subs.findIndex(s => s.id === conflict.id);
+        const index = updated.findIndex((s) => s.id === conflict.id);
         if (index !== -1) {
-          const updated = [...subs];
           updated[index] = conflict.cloud;
-          setSubs(updated);
         }
       }
+
+      setSubs(updated);
     }
     setConflicts([]);
-  }, [conflicts, subs, setSubs]);
+  }, [conflicts, setSubs]);
 
   return {
     syncStatus,
