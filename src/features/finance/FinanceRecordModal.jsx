@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFinanceStore } from '@store/financeStore';
-import { FINANCE_TYPES, PAYMENT_METHODS } from '@shared/lib/financeConstants';
+import { FINANCE_TYPES, PAYMENT_METHODS, HOW_PAID_OPTIONS } from '@shared/lib/financeConstants';
 import Modal from '@shared/ui/Modal';
 
 const inputClass = 'w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200';
@@ -210,13 +210,16 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
           </div>
           <div>
             <label className={labelClass}>How I paid?</label>
-            <input
-              type="text"
+            <select
               value={form.howPaid}
               onChange={(e) => setForm({ ...form, howPaid: e.target.value })}
-              className={inputClass}
-              placeholder="e.g. Auto-pay"
-            />
+              className={selectClass}
+            >
+              <option value="">Select...</option>
+              {HOW_PAID_OPTIONS.map((hp) => (
+                <option key={hp} value={hp}>{hp}</option>
+              ))}
+            </select>
           </div>
         </div>
 

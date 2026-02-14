@@ -6,13 +6,13 @@ export const FINANCE_TYPES = [
 ];
 
 export const PAYMENT_METHODS = [
-  'Cash',
+  'Token Deposit',
   'Bank Transfer',
-  'Direct Deposit',
-  'Credit Card',
-  'Debit Card',
-  'E-Wallet',
-  'Other',
+];
+
+export const HOW_PAID_OPTIONS = [
+  'Minimum Payment',
+  'Full Payment',
 ];
 
 export const FINANCE_TEMPLATE_ID = '1zhSnlIoqUSCkPMOCPT711rnsaIEDHhCjnBHixnBzXeo';
