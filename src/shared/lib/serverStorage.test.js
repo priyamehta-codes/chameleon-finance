@@ -110,13 +110,34 @@ describe('serverStorage', () => {
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
-      }));
+      }))
+      .mockResolvedValueOnce(new Response(null, { status: 302 }));
     vi.stubGlobal('fetch', fetchMock);
 
     const status = await getCloudAuthStatus({ force: true });
     expect(status.authenticated).toBe(true);
     expect(status.email).toBe('user@example.com');
+    expect(status.accessConfigured).toBe(true);
     expect(canUseCloudBackupAuth('', status)).toBe(true);
+  });
+
+  it('getCloudAuthStatus marks Access as not configured when login endpoint is 404', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        authenticated: false,
+        source: 'cloudflare-access',
+        loginUrl: '/cdn-cgi/access/login',
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }))
+      .mockResolvedValueOnce(new Response(null, { status: 404 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const status = await getCloudAuthStatus({ force: true });
+    expect(status.authenticated).toBe(false);
+    expect(status.accessConfigured).toBe(false);
+    expect(status.accessEndpointStatus).toBe(404);
   });
 
   it('backupToServer rejects invalid token format when provided', async () => {

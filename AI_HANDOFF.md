@@ -35,6 +35,7 @@ Updated: 2026-02-17
   - social login status
   - sign in / sign out links via Cloudflare Access
   - refresh login status action
+- Added Access endpoint probing (`/cdn-cgi/access/login`) to detect missing Access policy and show clear UI warning instead of broken sign-in link.
 - Updated auto-backup flow to run with either:
   - valid token, or
   - active Cloudflare Access session.

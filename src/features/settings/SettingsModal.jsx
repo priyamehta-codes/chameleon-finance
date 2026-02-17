@@ -37,6 +37,8 @@ export default function SettingsModal({ isOpen, onClose }) {
     email: null,
     loginUrl: '/cdn-cgi/access/login',
     logoutUrl: '/cdn-cgi/access/logout',
+    accessConfigured: false,
+    accessEndpointStatus: null,
   });
 
   const hasCloudBackupAccess = useMemo(
@@ -247,12 +249,19 @@ export default function SettingsModal({ isOpen, onClose }) {
           <div className="mb-2 text-xs text-slate-500 dark:text-slate-400">
             {cloudAuth.loading
               ? 'Checking login status...'
+              : !cloudAuth.accessConfigured
+                ? 'Cloudflare Access is not configured for this deployment yet'
               : cloudAuth.authenticated
                 ? `Signed in as ${cloudAuth.email || cloudAuth.userId || 'Cloudflare user'}`
                 : 'Not signed in'}
           </div>
+          {!cloudAuth.loading && !cloudAuth.accessConfigured && (
+            <div className="mb-2 text-xs text-amber-600 dark:text-amber-400">
+              Configure Cloudflare Pages Access policy first (Pages dashboard -&gt; Settings -&gt; Access policy).
+            </div>
+          )}
           <div className="mb-3 flex items-center gap-2">
-            {!cloudAuth.authenticated && (
+            {!cloudAuth.authenticated && cloudAuth.accessConfigured && (
               <a
                 href={cloudAuth.loginUrl}
                 className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"

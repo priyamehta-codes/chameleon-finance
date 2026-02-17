@@ -85,6 +85,10 @@ Latest verified status:
    - use **Social Login (Cloudflare Access)** section to sign in/out.
    - `Backup to Cloud` and `Restore from Cloud` will then use the authenticated Access identity automatically (without manual token).
 
+Troubleshooting:
+- If Sign in opens a 404 page (`/cdn-cgi/access/login`), Access policy is not enabled yet for this Pages project.
+- Configure it in Cloudflare dashboard: **Pages project -> Settings -> Access policy** (choose All deployments or only Preview deployments).
+
 ### Build + Deploy
 
 ```bash

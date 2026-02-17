@@ -13,6 +13,8 @@ let cachedCloudAuth = {
     userId: null,
     loginUrl: '/cdn-cgi/access/login',
     logoutUrl: '/cdn-cgi/access/logout',
+    accessConfigured: false,
+    accessEndpointStatus: null,
   },
 };
 
@@ -55,6 +57,8 @@ function normalizeAuthStatus(raw) {
       userId: null,
       loginUrl: raw?.loginUrl || '/cdn-cgi/access/login',
       logoutUrl: raw?.logoutUrl || '/cdn-cgi/access/logout',
+      accessConfigured: raw?.accessConfigured === true,
+      accessEndpointStatus: Number.isFinite(raw?.accessEndpointStatus) ? raw.accessEndpointStatus : null,
     };
   }
 
@@ -65,7 +69,27 @@ function normalizeAuthStatus(raw) {
     userId: raw.userId || null,
     loginUrl: raw.loginUrl || '/cdn-cgi/access/login',
     logoutUrl: raw.logoutUrl || '/cdn-cgi/access/logout',
+    accessConfigured: raw.accessConfigured !== false,
+    accessEndpointStatus: Number.isFinite(raw?.accessEndpointStatus) ? raw.accessEndpointStatus : null,
   };
+}
+
+async function probeAccessLoginEndpoint(loginUrl) {
+  try {
+    const response = await fetch(loginUrl, {
+      method: 'HEAD',
+      redirect: 'manual',
+    });
+    return {
+      accessConfigured: response.status !== 404,
+      accessEndpointStatus: response.status,
+    };
+  } catch {
+    return {
+      accessConfigured: false,
+      accessEndpointStatus: null,
+    };
+  }
 }
 
 function readLocalJson(key, fallback) {
@@ -112,8 +136,14 @@ export async function getCloudAuthStatus({ force = false } = {}) {
     const response = await fetch(AUTH_ENDPOINT, { method: 'GET' });
     const data = await parseJsonResponse(response);
     const normalized = normalizeAuthStatus(response.ok ? data : null);
-    cachedCloudAuth = { at: now, value: normalized };
-    return normalized;
+    const probe = await probeAccessLoginEndpoint(normalized.loginUrl);
+    const merged = {
+      ...normalized,
+      accessConfigured: probe.accessConfigured,
+      accessEndpointStatus: probe.accessEndpointStatus,
+    };
+    cachedCloudAuth = { at: now, value: merged };
+    return merged;
   } catch {
     const fallback = normalizeAuthStatus(null);
     cachedCloudAuth = { at: now, value: fallback };
