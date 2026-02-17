@@ -75,7 +75,7 @@ export default function TrendsSection() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <TrendCard
           title="Month over Month"
           data={mom}
@@ -93,14 +93,13 @@ export default function TrendsSection() {
       {trendDirection && (
         <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800">
           <span className="text-xs text-slate-500 dark:text-slate-400">Overall trend:</span>
-          <span className={`text-xs font-semibold ${
-            trendDirection.direction === 'increasing' ? 'text-red-500' :
-            trendDirection.direction === 'decreasing' ? 'text-green-500' :
-            'text-slate-600 dark:text-slate-400'
-          }`}>
+          <span className={`text-xs font-semibold ${trendDirection.direction === 'increasing' ? 'text-red-500' :
+              trendDirection.direction === 'decreasing' ? 'text-green-500' :
+                'text-slate-600 dark:text-slate-400'
+            }`}>
             {trendDirection.direction === 'increasing' ? 'Spending is rising' :
-             trendDirection.direction === 'decreasing' ? 'Spending is falling' :
-             'Spending is stable'}
+              trendDirection.direction === 'decreasing' ? 'Spending is falling' :
+                'Spending is stable'}
           </span>
         </div>
       )}

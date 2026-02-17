@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getTypeColor, getTypeLabel } from '@shared/lib/financeConstants';
-import { LOGO_API_TOKEN, getColor } from '@shared/lib/constants';
+import { getColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 
 export default function FinanceRecordCard({ record, onEdit, onRemove }) {
   const typeColor = getTypeColor(record.type);
@@ -8,16 +9,14 @@ export default function FinanceRecordCard({ record, onEdit, onRemove }) {
   const hasExpense = record.expenses > 0;
   const [iconError, setIconError] = useState(false);
 
-  const logoUrl = record.iconDomain && record.iconDomain.length >= 4
-    ? `https://img.logo.dev/${record.iconDomain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-    : null;
+  const logoUrl = getLogoProxyUrl(record.iconDomain);
 
   const initial = (record.description || '?')[0].toUpperCase();
   const color = record.color ? getColor(record.color) : null;
 
   return (
     <div
-      className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+      className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-sm transition-all hover:shadow-md sm:p-4 dark:border-slate-700 dark:bg-slate-800"
       onClick={() => onEdit(record.id)}
     >
       {/* Color bar */}

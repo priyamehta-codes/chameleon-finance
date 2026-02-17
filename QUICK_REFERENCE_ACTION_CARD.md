@@ -5,7 +5,7 @@
 ### 🔴 URGENT - TOKEN REVOCATION
 ```
 1. Go to: https://logo.dev/dashboard
-2. Revoke token: pk_KuI_oR-IQ1-fqpAfz3FPEw
+2. Revoke exposed token: <revoked>
 3. Create new token
 4. Update in: js/utils.js:10
 5. Commit & push

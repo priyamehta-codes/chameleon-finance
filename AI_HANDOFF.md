@@ -1,158 +1,95 @@
 # AI Handoff: Chameleon Finance
 
-This file is a practical snapshot for the next AI/dev to continue work quickly.
+This file captures the latest deploy + code state so the next AI/dev can continue without re-discovery.
 
 ## 1. Project Snapshot
 
 - Name: `chameleon-finance`
-- Repo: `https://github.com/KunanonJ/chameleon-finance`
-- Production: `https://chameleon-finance.pages.dev`
-- Current branch: `main`
-- Current release commit: `d452d9b`
-- Updated at: `2026-02-14`
+- Repo remote: `https://github.com/KunanonJ/abdull-finance.git`
+- Branch: `main`
+- Production domain: `https://chameleon-finance.pages.dev`
+- Latest production deployment: `https://b5d73bf3.chameleon-finance.pages.dev`
+- Latest deploy id: `b5d73bf3-4874-4f81-a20b-39b31aff3873`
+- Cloudflare account id used for deploy: `187ab61ed9dbc6e616cb23e6b95aa8f1`
+- Updated at: `2026-02-17`
 
-## 2. What the App Does
+## 2. What Was Changed Most Recently
 
-Chameleon has two main tabs:
+### Security: logo token removal from client
+- Removed hardcoded `LOGO_API_TOKEN` from client constants.
+- Added backend proxy endpoint for logos:
+  - `functions/api/logo/[domain].js`
+- Added shared helper to build proxy URL:
+  - `src/shared/lib/logo.js`
+- Updated UI components to use `/api/logo/:domain` (no client-side token in requests).
+- Existing exposed token value was scrubbed from source files/docs and must remain revoked.
 
-1. `Finance Tracker` (default tab)
-2. `Subscriptions`
+### Performance: code splitting
+- Added lazy loading and `Suspense` for heavy sections and modals in:
+  - `src/App.jsx`
+- Added Vite chunking strategy in:
+  - `vite.config.js`
 
-### Finance Tracker
-- Tracks records with fields like date, description, income, expenses, type, due date, payment info
-- Shows summary cards and dashboard charts (bar, line, pie, area, treemap, sankey)
-- Supports record icons:
-  - Manual icon upload
-  - Auto-detect icon domain from description (logo service)
-- Includes `Clear All` with a two-step confirm interaction
+### Server-side storage path (optional)
+- Added helper client for backup/restore via existing R2 API:
+  - `src/shared/lib/serverStorage.js`
+- Added Settings UI for token-based cloud backup/restore:
+  - `src/features/settings/SettingsModal.jsx`
+- Current model:
+  - localStorage remains primary
+  - server backup is opt-in
 
-### Subscriptions
-- Tracks recurring subscriptions
-- Has dashboard charts, budget indicator, trends, and renewal insights
+### Test additions
+- Added CSV parser + recurring detection tests:
+  - `src/shared/lib/csvParser.test.js`
+- Added Sheets sync hook tests:
+  - `src/features/sync/useSheetsSync.test.js`
 
-## 3. Recent Product Behavior Changes
+## 3. Deploy Runbook (Cloudflare Pages)
 
-- Finance import now maps `Income` and `Expenses` by **header name**, not fixed index.
-- Finance import supports header variants and typo variants (`Income Collumn`, `Expenses Collumn`).
-- Finance import auto-detects header row (works when users add a title row above headers).
-- Global button hover style now uses a card-like shadow feel.
-- Buy Me a Coffee button exists in header near settings.
-- Auto Google Sheets sync added:
-  - on app load
-  - every 5 minutes
-  - on network restore / window focus / tab visibility return
-- Line charts updated to monthly overview:
-  - subscription line chart now shows monthly totals (last 12 months)
-  - finance line chart now shows 12 months including zero-value months
-- Finance sync now supports tab-level URL targeting:
-  - if connected URL includes `gid=...`, finance import reads that tab
-  - otherwise finance import defaults to `Sheet1`
-
-## 4. Core Tech and Commands
-
-- React 19 + Vite 7
-- Zustand for state
-- Tailwind CSS v4
-- Recharts for visualization
-- Vitest for unit/integration
-- Playwright for E2E
-- Cloudflare Pages for deploy
-
-### Local Commands
-
+### Build
 ```bash
-npm install
-npm run dev
 npm run build
-npm test
-npm run test:e2e
 ```
 
-## 5. Testing Baseline
-
-Latest verified baseline in this workspace:
-
-- Vitest: `242/242` passing
-- Playwright E2E: `54/54` passing
-
-Important note:
-- Jest is not the primary test runner here; tests are authored for Vitest + Playwright.
-
-## 6. Important Files to Read First
-
-- App shell and tab flow:
-  - `src/App.jsx`
-- Finance feature:
-  - `src/features/finance/FinanceSection.jsx`
-  - `src/features/finance/FinanceRecordModal.jsx`
-  - `src/features/finance/FinanceRecordCard.jsx`
-  - `src/features/finance/FinanceToolbar.jsx`
-- Sheets sync:
-  - `src/features/sync/sheetsApi.js`
-  - `src/features/finance/useFinanceSheetsSync.js`
-  - `src/features/sync/useSheetsSync.js`
-- Line chart implementations:
-  - `src/features/visualizations/LineView.jsx`
-  - `src/features/finance/FinanceLineView.jsx`
-- State:
-  - `src/store/financeStore.js`
-  - `src/store/subscriptionStore.js`
-  - `src/store/settingsStore.js`
-- Styling:
-  - `src/index.css`
-
-## 7. Data and Persistence
-
-Main localStorage keys:
-
-- `chameleon_finance_data` (finance records)
-- `vexly_flow_data` (subscriptions + step/view + income)
-- `subgrid_theme` (theme)
-- `_sheets_config` (google sheet connection)
-- `_sync_state`, `_finance_sync_state`, `_offline_queue` (sync metadata)
-
-## 8. Google Sheets Integration Rules
-
-### Generic Sync
-- Uses public Google Sheets CSV endpoint (`gviz/tq?tqx=out:csv`)
-- No Sheets API key
-- Requires public sharing (`Anyone with the link can view`)
-
-### Finance Import (`readFinancialRecords`)
-- Header-based alias mapping
-- Header-row auto detection
-- Fallback index mapping retained for older templates
-- Numeric parsing handles commas, symbols, and locale variants
-- Finance tab selection rules:
-  - if connected Google Sheets URL contains `gid=...`, that tab is used
-  - otherwise fallback tab is `Sheet1`
-
-Finance template copy URL:
-`https://docs.google.com/spreadsheets/d/1zhSnlIoqUSCkPMOCPT711rnsaIEDHhCjnBHixnBzXeo/copy`
-
-## 9. Deployment Runbook (Cloudflare Pages)
-
-Project name: `chameleon-finance`
-
+### Deploy (explicit account selection needed)
 ```bash
-npm run build
+CLOUDFLARE_ACCOUNT_ID=187ab61ed9dbc6e616cb23e6b95aa8f1 \
 npx wrangler pages deploy dist --project-name=chameleon-finance --commit-dirty=true
 ```
 
-Optional verification:
-
+### Verify latest deployment
 ```bash
+CLOUDFLARE_ACCOUNT_ID=187ab61ed9dbc6e616cb23e6b95aa8f1 \
 npx wrangler pages deployment list --project-name=chameleon-finance
 ```
 
-## 10. Known Caveats
+## 4. Required Runtime Secrets
 
-- `wrangler whoami` can intermittently fail locally, but deploy/list commands may still work.
-- Vite build warns about large chunks; this is currently non-blocking.
-- Repo remote may still show redirect from old repository name; push still works.
+- `LOGO_DEV_API_TOKEN`
+  - Used only by `functions/api/logo/[domain].js`
+  - Must be set in Cloudflare Pages/Workers environment
+  - Must not be committed into source
 
-## 11. Suggested Next Improvements
+For local testing:
+- `.dev.vars.example` exists
+- create `.dev.vars` from it with real values
 
-1. Add explicit UI hint after finance sync when imported values are all zero (data-quality warning).
-2. Add one more E2E for finance sheet import header variants.
-3. Consider code-splitting chart views to reduce bundle-size warning.
+## 5. Known Issues / Caveats
+
+- Build warning still appears:
+  - `%VITE_CLOUDFLARE_ANALYTICS_TOKEN% is not defined in /index.html`
+  - non-blocking for deploy, but should be configured cleanly.
+- Vitest currently fails to run in this environment due local `jsdom` package issue:
+  - missing `node_modules/jsdom/lib/generated/idl/utils.js`
+  - tests added but not fully executed in this environment.
+- Wrangler requires explicit account id when multiple Cloudflare accounts are present.
+
+## 6. Files to Read First for Continuation
+
+- `src/App.jsx` (lazy loading / app shell)
+- `functions/api/logo/[domain].js` (logo proxy endpoint)
+- `src/shared/lib/logo.js` (logo URL normalization/proxy)
+- `src/features/settings/SettingsModal.jsx` (server backup/restore UI)
+- `src/shared/lib/serverStorage.js` (R2 backup client helpers)
+- `src/features/sync/useSheetsSync.test.js` and `src/shared/lib/csvParser.test.js` (new tests)

@@ -1,7 +1,8 @@
 import { useReminders } from '@features/reminders/useReminders';
 import { useCurrencyStore } from '@store/currencyStore';
 import { formatOriginalPrice } from '@shared/lib/currencies';
-import { getColor, LOGO_API_TOKEN } from '@shared/lib/constants';
+import { getColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 
 export default function UpcomingRenewals() {
   const { upcoming, getRenewalBadgeText } = useReminders();
@@ -25,12 +26,7 @@ export default function UpcomingRenewals() {
       <div className="space-y-2">
         {upcoming.map((sub) => {
           const color = getColor(sub.color);
-          const domain = sub.url
-            ? sub.url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
-            : null;
-          const logoUrl = domain && domain.length > 3
-            ? `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-            : null;
+          const logoUrl = getLogoProxyUrl(sub.url);
 
           const isUrgent = sub.daysUntilRenewal <= 3;
           const isWarning = sub.daysUntilRenewal <= 7;

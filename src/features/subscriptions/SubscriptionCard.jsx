@@ -1,4 +1,5 @@
-import { getColor, LOGO_API_TOKEN } from '@shared/lib/constants';
+import { getColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 import { formatOriginalPrice } from '@shared/lib/currencies';
 import { useCurrencyStore } from '@store/currencyStore';
 import { useReminders } from '@features/reminders/useReminders';
@@ -10,12 +11,7 @@ export default function SubscriptionCard({ sub, onEdit, onRemove }) {
 
   const color = getColor(sub.color);
 
-  const domain = sub.url
-    ? sub.url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
-    : null;
-  const logoUrl = domain && domain.length > 3
-    ? `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-    : null;
+  const logoUrl = getLogoProxyUrl(sub.url);
 
   let renewalBadge = null;
   if (sub.startDate) {

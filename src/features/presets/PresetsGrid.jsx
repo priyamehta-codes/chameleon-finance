@@ -1,5 +1,5 @@
 import { presets } from '@shared/lib/presets';
-import { LOGO_API_TOKEN } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 
 export default function PresetsGrid({ onSelect }) {
   const popular = presets.filter((p) => p.popular);
@@ -7,9 +7,7 @@ export default function PresetsGrid({ onSelect }) {
   return (
     <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
       {popular.map((preset) => {
-        const logoUrl = preset.domain
-          ? `https://img.logo.dev/${preset.domain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-          : null;
+        const logoUrl = getLogoProxyUrl(preset.domain);
 
         return (
           <button

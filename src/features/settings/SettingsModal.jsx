@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Modal from '@shared/ui/Modal';
 import CurrencySelect from '@shared/ui/CurrencySelect';
 import BudgetSettings from '@features/budget/BudgetSettings';
@@ -6,6 +6,14 @@ import ThemeToggle from '@features/settings/ThemeToggle';
 import GoogleSheetsSettings from '@features/sync/GoogleSheetsSettings';
 import { useCurrencyStore } from '@store/currencyStore';
 import { useSubscriptionStore } from '@store/subscriptionStore';
+import { useFinanceStore } from '@store/financeStore';
+import {
+  backupToServer,
+  getServerToken,
+  isValidServerToken,
+  restoreFromServer,
+  saveServerToken,
+} from '@shared/lib/serverStorage';
 
 export default function SettingsModal({ isOpen, onClose }) {
   const selectedCurrency = useCurrencyStore((s) => s.selectedCurrency);
@@ -14,6 +22,12 @@ export default function SettingsModal({ isOpen, onClose }) {
   const setSubs = useSubscriptionStore((s) => s.setSubs);
   const income = useSubscriptionStore((s) => s.income);
   const setIncome = useSubscriptionStore((s) => s.setIncome);
+  const records = useFinanceStore((s) => s.records);
+  const setRecords = useFinanceStore((s) => s.setRecords);
+
+  const [serverToken, setServerToken] = useState(() => getServerToken());
+  const [serverBusy, setServerBusy] = useState(false);
+  const [serverMessage, setServerMessage] = useState('');
 
   const handleExport = useCallback(() => {
     const data = JSON.stringify(subs, null, 2);
@@ -51,6 +65,80 @@ export default function SettingsModal({ isOpen, onClose }) {
     };
     input.click();
   }, [setSubs]);
+
+  const handleServerTokenChange = (value) => {
+    setServerToken(value);
+    saveServerToken(value);
+    if (!value) {
+      setServerMessage('');
+    }
+  };
+
+  const handleBackupToCloud = useCallback(async () => {
+    try {
+      setServerBusy(true);
+      setServerMessage('');
+
+      const budgetRaw = localStorage.getItem('subgrid_budget');
+      const trendsRaw = localStorage.getItem('subgrid_history');
+      const budget = budgetRaw ? JSON.parse(budgetRaw) : null;
+      const trends = trendsRaw ? JSON.parse(trendsRaw) : [];
+
+      const payload = {
+        version: 2,
+        backupDate: new Date().toISOString(),
+        subscriptions: subs,
+        budget,
+        trends,
+        financeRecords: records,
+        income,
+      };
+
+      const result = await backupToServer(serverToken, payload);
+      setServerMessage(`Cloud backup complete (${result.backupDate || 'ok'})`);
+    } catch (err) {
+      setServerMessage(`Cloud backup failed: ${err.message}`);
+    } finally {
+      setServerBusy(false);
+    }
+  }, [income, records, serverToken, subs]);
+
+  const handleRestoreFromCloud = useCallback(async () => {
+    try {
+      setServerBusy(true);
+      setServerMessage('');
+
+      const data = await restoreFromServer(serverToken);
+
+      if (Array.isArray(data.subscriptions)) {
+        setSubs(data.subscriptions);
+      }
+      if (Array.isArray(data.financeRecords)) {
+        setRecords(data.financeRecords);
+      }
+      if (typeof data.income === 'number') {
+        setIncome(data.income);
+      }
+
+      if (data.budget) {
+        localStorage.setItem('subgrid_budget', JSON.stringify(data.budget));
+      } else {
+        localStorage.removeItem('subgrid_budget');
+      }
+
+      if (Array.isArray(data.trends)) {
+        localStorage.setItem('subgrid_history', JSON.stringify(data.trends));
+      } else {
+        localStorage.removeItem('subgrid_history');
+      }
+
+      setServerMessage('Cloud restore complete');
+    } catch (err) {
+      setServerMessage(`Cloud restore failed: ${err.message}`);
+    } finally {
+      setServerBusy(false);
+    }
+  }, [serverToken, setIncome, setRecords, setSubs]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Settings">
@@ -118,6 +206,44 @@ export default function SettingsModal({ isOpen, onClose }) {
               Import JSON
             </button>
           </div>
+        </div>
+
+        <div className="border-t border-slate-100 pt-4 dark:border-slate-700">
+          <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Secure Cloud Backup (Optional)
+          </label>
+          <p className="mb-3 text-xs text-slate-400 dark:text-slate-500">
+            Uses server-side R2 storage via `/api/r2/backup`. Your user token stays local to this browser.
+          </p>
+          <input
+            type="password"
+            value={serverToken}
+            onChange={(e) => handleServerTokenChange(e.target.value)}
+            placeholder="64-char user token"
+            className="mb-2 w-full rounded-xl border border-slate-200 px-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
+          />
+          <div className="mb-2 text-xs text-slate-400 dark:text-slate-500">
+            {serverToken ? (isValidServerToken(serverToken) ? 'Token format looks valid' : 'Token format invalid') : 'No token set'}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleBackupToCloud}
+              disabled={serverBusy || !isValidServerToken(serverToken)}
+              className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
+            >
+              Backup to Cloud
+            </button>
+            <button
+              onClick={handleRestoreFromCloud}
+              disabled={serverBusy || !isValidServerToken(serverToken)}
+              className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700"
+            >
+              Restore from Cloud
+            </button>
+          </div>
+          {serverMessage && (
+            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">{serverMessage}</div>
+          )}
         </div>
       </div>
     </Modal>

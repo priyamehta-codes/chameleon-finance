@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { lazy, Suspense, useState, useEffect, useMemo, useRef } from 'react';
 import { useSubscriptionStore } from '@store/subscriptionStore';
 import { useCurrencyStore } from '@store/currencyStore';
 import { useTheme } from '@shared/hooks/useTheme';
@@ -6,25 +6,33 @@ import { formatCurrency } from '@shared/lib/currencies';
 import { toMonthly } from '@shared/lib/currencies';
 
 import SubscriptionList from '@features/subscriptions/SubscriptionList';
-import AddSubscriptionModal from '@features/subscriptions/AddSubscriptionModal';
 import PresetsGrid from '@features/presets/PresetsGrid';
-import TreemapView from '@features/visualizations/TreemapView';
-import BarView from '@features/visualizations/BarView';
-import LineView from '@features/visualizations/LineView';
-import PieView from '@features/visualizations/PieView';
-import AreaView from '@features/visualizations/AreaView';
-import SankeyView from '@features/visualizations/SankeyView';
 import ViewToggle from '@features/visualizations/ViewToggle';
 import BudgetIndicator from '@features/budget/BudgetIndicator';
-import TrendsSection from '@features/trends/TrendsSection';
 import UpcomingRenewals from '@features/reminders/UpcomingRenewals';
 import SyncIndicator from '@features/sync/SyncIndicator';
-import SettingsModal from '@features/settings/SettingsModal';
-import FinanceSection from '@features/finance/FinanceSection';
 import { useSheetsSync } from '@features/sync/useSheetsSync';
 import { useFinanceSheetsSync } from '@features/finance/useFinanceSheetsSync';
 
 const AUTO_SYNC_INTERVAL_MS = 5 * 60 * 1000;
+const AddSubscriptionModal = lazy(() => import('@features/subscriptions/AddSubscriptionModal'));
+const SettingsModal = lazy(() => import('@features/settings/SettingsModal'));
+const FinanceSection = lazy(() => import('@features/finance/FinanceSection'));
+const TreemapView = lazy(() => import('@features/visualizations/TreemapView'));
+const BarView = lazy(() => import('@features/visualizations/BarView'));
+const LineView = lazy(() => import('@features/visualizations/LineView'));
+const PieView = lazy(() => import('@features/visualizations/PieView'));
+const AreaView = lazy(() => import('@features/visualizations/AreaView'));
+const SankeyView = lazy(() => import('@features/visualizations/SankeyView'));
+const TrendsSection = lazy(() => import('@features/trends/TrendsSection'));
+
+function SectionLoader({ label = 'Loading...' }) {
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-white px-4 py-6 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500">
+      {label}
+    </div>
+  );
+}
 
 export default function App() {
   useTheme();
@@ -146,7 +154,7 @@ export default function App() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
+    <div className="mx-auto w-full max-w-2xl px-3 py-4 sm:px-6 sm:py-8">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -206,7 +214,11 @@ export default function App() {
       </div>
 
       {/* Finance Tracker Section */}
-      {activeTab === 'finance' && <FinanceSection />}
+      {activeTab === 'finance' && (
+        <Suspense fallback={<SectionLoader label="Loading finance tracker..." />}>
+          <FinanceSection />
+        </Suspense>
+      )}
 
       {/* Step 1: Subscription Management */}
       {activeTab === 'subscriptions' && step === 1 && (
@@ -273,19 +285,23 @@ export default function App() {
             </div>
           </div>
 
-          {/* Visualization */}
-          {currentView === 'bar' && <BarView />}
-          {currentView === 'line' && <LineView />}
-          {currentView === 'pie' && <PieView />}
-          {currentView === 'area' && <AreaView />}
-          {currentView === 'treemap' && <TreemapView />}
-          {currentView === 'sankey' && <SankeyView />}
+          <Suspense fallback={<SectionLoader label="Loading dashboard..." />}>
+            {/* Visualization */}
+            {currentView === 'bar' && <BarView />}
+            {currentView === 'line' && <LineView />}
+            {currentView === 'pie' && <PieView />}
+            {currentView === 'area' && <AreaView />}
+            {currentView === 'treemap' && <TreemapView />}
+            {currentView === 'sankey' && <SankeyView />}
+          </Suspense>
 
           {/* Budget */}
           <BudgetIndicator />
 
-          {/* Trends */}
-          <TrendsSection />
+          <Suspense fallback={<SectionLoader label="Loading trends..." />}>
+            {/* Trends */}
+            <TrendsSection />
+          </Suspense>
 
           {/* Export CSV */}
           <button
@@ -301,17 +317,22 @@ export default function App() {
       )}
 
       {/* Modals */}
-      <AddSubscriptionModal
-        isOpen={modalOpen}
-        onClose={handleCloseModal}
-        editId={editId}
-        preset={preset}
-      />
-
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      />
+      <Suspense fallback={null}>
+        {modalOpen && (
+          <AddSubscriptionModal
+            isOpen={modalOpen}
+            onClose={handleCloseModal}
+            editId={editId}
+            preset={preset}
+          />
+        )}
+        {settingsOpen && (
+          <SettingsModal
+            isOpen={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }

@@ -35,10 +35,10 @@
 - **Tests Added**: 5 XSS prevention tests
 
 #### 2. Exposed API Token (SECURITY 🔴)
-- **Problem**: Logo.dev token `pk_KuI_oR-IQ1-fqpAfz3FPEw` hardcoded in 6 files
-- **Solution**: Centralized in `LOGO_API_TOKEN` constant with security warning
-- **Files Modified**: app.js, modals.js, beeswarm.js, circlepack.js
-- **Next Step**: Revoke token, create new one, move to backend API
+- **Problem**: Logo.dev token `<revoked>` hardcoded in 6 files
+- **Solution**: Removed client token usage, added backend logo proxy (`/api/logo/:domain`) with server env secret
+- **Files Modified**: `functions/api/logo/[domain].js`, `src/shared/lib/logo.js`, UI components
+- **Next Step**: Keep token in runtime env only (`LOGO_DEV_API_TOKEN`)
 
 #### 3. Division by Zero in Trends (CRASH 🔴)
 - **Problem**: MoM/YoY calculations crash with `Infinity` on zero spending
@@ -256,7 +256,7 @@
 ### 🔴 URGENT (Today)
 1. **Revoke API Token**
    - Go to https://logo.dev/dashboard
-   - Revoke: `pk_KuI_oR-IQ1-fqpAfz3FPEw`
+   - Revoke: `<revoked>`
    - Create new token
 
 2. **Update Token in Code**

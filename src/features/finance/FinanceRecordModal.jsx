@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useFinanceStore } from '@store/financeStore';
 import { FINANCE_TYPES, PAYMENT_METHODS, HOW_PAID_OPTIONS } from '@shared/lib/financeConstants';
-import { LOGO_API_TOKEN, randColor } from '@shared/lib/constants';
+import { randColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 import Modal from '@shared/ui/Modal';
 import ColorPicker from '@shared/ui/ColorPicker';
 
@@ -17,8 +18,7 @@ function extractDomain(text) {
 }
 
 function getLogoUrl(domain) {
-  if (!domain || domain.length < 4) return null;
-  return `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`;
+  return getLogoProxyUrl(domain);
 }
 
 function resizeImage(file, maxSize = 100) {
@@ -192,7 +192,7 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={editId ? 'Edit Record' : 'Add Record'}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Date</label>
             <input
@@ -312,7 +312,7 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
           <ColorPicker value={form.color} onChange={(id) => setForm({ ...form, color: id })} />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Income</label>
             <input
@@ -339,7 +339,7 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Minimum Expenses</label>
             <input
@@ -366,7 +366,7 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Balance</label>
             <input
@@ -390,7 +390,7 @@ export default function FinanceRecordModal({ isOpen, onClose, editId }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Payment Method</label>
             <select

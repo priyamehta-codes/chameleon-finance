@@ -91,26 +91,24 @@ console.log(escaped);
 **Test 1: Token Not in Browser Console**
 ```javascript
 // In browser DevTools console:
-console.log(LOGO_API_TOKEN);
-// Expected: Displays only in js/utils.js, not leaked elsewhere
+console.log(window.LOGO_API_TOKEN);
+// Expected: undefined (client should not expose any logo token)
 ```
 
-**Test 2: Token Not in Network Requests** (yet - before backend proxy)
+**Test 2: Token Not in Network Requests**
 ```
 // Open DevTools → Network tab
 // Add a subscription with a URL
-// Check logo requests to img.logo.dev
-// Currently: Token visible in query params (temporary, will fix)
-// After backend proxy: Token hidden
+// Check logo requests
+// Expected: requests go to /api/logo/:domain (no token in browser-visible URL)
 ```
 
 **Test 3: Git History Check**
 ```bash
-# Check if token appears in recent commits
-git log -p --all | grep -i "pk_KuI_oR"
+# Check if any API secrets appear in history
+git log -p --all | grep -Ei "logo.dev|LOGO_DEV_API_TOKEN|pk_"
 
-# Expected: Shows historical commits (need to purge history)
-# Action needed: Revoke token, new token, clean history if critical
+# Expected: no active secrets in current branch; rotate any exposed key immediately
 ```
 
 ---

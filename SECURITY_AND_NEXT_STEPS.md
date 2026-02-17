@@ -3,22 +3,23 @@
 ## 🔴 PRIORITY 1: API Token Revocation (IMMEDIATE)
 
 ### Current Status
-- ⚠️ Logo.dev token exposed in source code: `pk_KuI_oR-IQ1-fqpAfz3FPEw`
-- ✅ Token has been centralized in `js/utils.js` (line 10)
-- ⚠️ Token is still hardcoded and visible in version control history
+- ⚠️ Logo.dev token was exposed in source code: `<revoked>`
+- ✅ Client now fetches logos via `/api/logo/:domain` (no client-side token)
+- ✅ Token is expected only in server env var `LOGO_DEV_API_TOKEN`
+- ⚠️ Exposed historical token should remain revoked permanently
 
 ### Required Actions (DO IMMEDIATELY)
 
 1. **Revoke Current Token**
    - Go to: https://logo.dev/dashboard
-   - Find API token: `pk_KuI_oR-IQ1-fqpAfz3FPEw`
+   - Find exposed API token and revoke it immediately
    - Click "Revoke" or "Delete"
    - This prevents any misuse of the exposed token
 
 2. **Generate New Token**
    - Create new API token in logo.dev dashboard
-   - Update `LOGO_API_TOKEN` in `js/utils.js:10`
-   - Commit the new token to git
+   - Set `LOGO_DEV_API_TOKEN` in Cloudflare Pages/Worker environment variables
+   - Never commit token values to git
 
 ### Why This Matters
 - Token is visible in git history (exploit vector)
@@ -30,19 +31,19 @@
 
 ## 🟠 PRIORITY 2: Backend API Proxy (BEFORE PRODUCTION)
 
-### Current Architecture (UNSAFE)
+### Legacy Architecture (UNSAFE)
 ```
 Browser → (exposes token) → https://img.logo.dev
 ```
 
-### Recommended Architecture (SECURE)
+### Current Architecture (SECURE)
 ```
 Browser → https://your-api.com/api/logo-proxy → https://img.logo.dev
 ```
 
 ### Implementation Steps
 
-1. **Create Backend Endpoint** (Node.js/Express example)
+1. **Create Backend Endpoint**
    ```javascript
    // backend/routes/logo-proxy.js
    const express = require('express');
@@ -51,7 +52,7 @@ Browser → https://your-api.com/api/logo-proxy → https://img.logo.dev
 
    router.get('/logo/:domain', async (req, res) => {
      const { domain } = req.params;
-     const token = process.env.LOGO_API_TOKEN; // Server-side secret
+     const token = process.env.LOGO_DEV_API_TOKEN; // Server-side secret
 
      try {
        const logoUrl = `https://img.logo.dev/${domain}?token=${token}&size=100&retina=true&format=png`;
@@ -67,7 +68,7 @@ Browser → https://your-api.com/api/logo-proxy → https://img.logo.dev
    module.exports = router;
    ```
 
-2. **Update Client Code** (js/utils.js)
+2. **Update Client Code**
    ```javascript
    function getLogoUrl(domain) {
      return `/api/logo/${domain}`; // Server endpoint, no token
@@ -75,13 +76,10 @@ Browser → https://your-api.com/api/logo-proxy → https://img.logo.dev
    ```
 
 3. **Update All References**
-   - `js/app.js:177,324,414` - Use `getLogoUrl(domain)`
-   - `js/modals.js:239` - Use `getLogoUrl(p.domain)`
-   - `js/beeswarm.js:151` - Use `getLogoUrl(domain)`
-   - `js/circlepack.js:218` - Use `getLogoUrl(domain)`
+   - Replace direct `https://img.logo.dev/...token=...` usage in UI with `/api/logo/:domain`
 
 4. **Environment Variables**
-   - Add to `.env`: `LOGO_API_TOKEN=<new-token>`
+   - Add to runtime env: `LOGO_DEV_API_TOKEN=<new-token>`
    - Add to `.gitignore`: Never commit `.env`
 
 ---

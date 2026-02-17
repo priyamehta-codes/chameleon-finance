@@ -4,7 +4,7 @@ Chameleon is a personal finance web app for tracking subscriptions and day-to-da
 
 - Production: [https://chameleon-finance.pages.dev](https://chameleon-finance.pages.dev)
 - Stack: React + Vite + Zustand + Tailwind + Recharts
-- Data storage: Browser `localStorage` (client-side)
+- Data storage: Browser `localStorage` (default) with optional server-side backup to Cloudflare R2
 
 ## Features
 
@@ -42,6 +42,12 @@ npm run dev
 ```
 
 Open `http://localhost:5173`.
+
+## Environment and Secrets
+
+- `LOGO_DEV_API_TOKEN` is now server-side only and used by `functions/api/logo/[domain].js`.
+- Client code never includes logo API keys; logos are fetched through `/api/logo/:domain`.
+- For local Pages-function testing, create `.dev.vars` from `.dev.vars.example`.
 
 ## Scripts
 
@@ -110,6 +116,9 @@ Cloudflare Pages project: `chameleon-finance`
 npm run build
 npx wrangler pages deploy dist --project-name=chameleon-finance --commit-dirty=true
 ```
+
+Required production environment variables:
+- `LOGO_DEV_API_TOKEN`: logo.dev token used by backend proxy only.
 
 ## Project Structure
 

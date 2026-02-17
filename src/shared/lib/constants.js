@@ -76,8 +76,6 @@ export const defaultCurrencies = {
   UAH: { symbol: "₴", name: "Ukrainian Hryvnia", rate: 37.5 },
 };
 
-export const LOGO_API_TOKEN = "pk_KuI_oR-IQ1-fqpAfz3FPEw";
-
 export function randColor() {
   return colors[Math.floor(Math.random() * colors.length)];
 }

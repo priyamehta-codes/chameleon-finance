@@ -2,7 +2,8 @@ import { useRef, useState, useEffect, useMemo } from 'react';
 import { useSubscriptionStore } from '@store/subscriptionStore';
 import { useCurrencyStore } from '@store/currencyStore';
 import { toMonthly, formatCurrency } from '@shared/lib/currencies';
-import { getColor, LOGO_API_TOKEN } from '@shared/lib/constants';
+import { getColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 import { Treemap } from '@shared/lib/treemapLayout';
 
 export default function TreemapView() {
@@ -56,12 +57,7 @@ export default function TreemapView() {
         {cells.map((cell) => {
           const color = getColor(cell.color);
           const monthly = toMonthly(cell, selectedCurrency, currencies);
-          const domain = cell.url
-            ? cell.url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
-            : null;
-          const logoUrl = domain && domain.length > 3
-            ? `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-            : null;
+          const logoUrl = getLogoProxyUrl(cell.url);
 
           const isSmall = cell.w < 80 || cell.h < 60;
           const isTiny = cell.w < 50 || cell.h < 40;

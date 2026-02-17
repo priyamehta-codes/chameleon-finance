@@ -1,0 +1,4 @@
+# Cloudflare Pages Functions local env vars
+# Copy to .dev.vars and set real values before running wrangler pages dev.
+
+LOGO_DEV_API_TOKEN=replace_with_rotated_logo_dev_token

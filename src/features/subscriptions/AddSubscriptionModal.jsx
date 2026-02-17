@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSubscriptionStore } from '@store/subscriptionStore';
 import { useCurrencyStore } from '@store/currencyStore';
 import { CATEGORIES, suggestCategory } from '@shared/lib/categories';
-import { randColor, LOGO_API_TOKEN } from '@shared/lib/constants';
+import { randColor } from '@shared/lib/constants';
+import { getLogoProxyUrl } from '@shared/lib/logo';
 import { Analytics } from '@shared/lib/analytics';
 import Modal from '@shared/ui/Modal';
 import ColorPicker from '@shared/ui/ColorPicker';
@@ -98,12 +99,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, editId, preset }
     onClose();
   };
 
-  const faviconDomain = form.url
-    ? form.url.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]
-    : null;
-  const faviconUrl = faviconDomain && faviconDomain.length > 3
-    ? `https://img.logo.dev/${faviconDomain}?token=${LOGO_API_TOKEN}&size=100&retina=true&format=png`
-    : null;
+  const faviconUrl = getLogoProxyUrl(form.url);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={editId ? 'Edit Subscription' : 'Add Subscription'}>
