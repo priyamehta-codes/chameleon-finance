@@ -5,7 +5,7 @@ Chameleon is a local-first finance and subscription tracker with optional cloud 
 - Production: [https://chameleon-finance.pages.dev](https://chameleon-finance.pages.dev)
 - Stack: React 19, Vite 7, Zustand, Recharts, Cloudflare Pages Functions, D1, R2
 
-## Quick Architecture Summary
+## Quick Architecture Summary 
 
 The codebase is split into 4 main runtime layers:
 
